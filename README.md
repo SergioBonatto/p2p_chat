@@ -80,14 +80,14 @@ These persist across sessions, maintaining your identity.
 ```
 ┌─────────────┐         DHT          ┌─────────────┐
 │   Peer A    │ ◄─────Discovery────► │   Peer B    │
-│             │                       │             │
+│             │                      │             │
 │  Ed25519    │    Direct P2P TCP    │  Ed25519    │
 │  Keypair    │ ◄────Connection────► │  Keypair    │
-│             │                       │             │
-│   AES-256   │                       │   AES-256   │
+│             │                      │             │
+│   AES-256   │                      │   AES-256   │
 │   Encrypt   │ ──────Message──────► │   Decrypt   │
-│   + Sign    │                       │   + Verify  │
-└─────────────┘                       └─────────────┘
+│   + Sign    │                      │   + Verify  │
+└─────────────┘                      └─────────────┘
 ```
 
 ### Security Flow
