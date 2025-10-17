@@ -1,0 +1,19 @@
+{
+  "name": "p2p_chat",
+  "version": "0.1.0",
+  "description": "Terminal P2P chat using Hyperswarm and TypeScript",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc -p .",
+    "run": "node dist/index.js"
+  },
+  "dependencies": {
+    "hyperswarm": "^4.14.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.22",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.9.3"
+  }
+}
