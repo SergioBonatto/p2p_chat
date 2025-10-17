@@ -1,4 +1,4 @@
-# 🔒 P2P Chat - Secure Terminal Chat
+# P2P Chat - Secure Terminal Chat
 
 Terminal-based peer-to-peer chat with military-grade end-to-end encryption, no servers required.
 
