@@ -1,7 +1,7 @@
 {
   "name": "p2p_chat",
-  "version": "0.1.0",
-  "description": "Terminal P2P chat using Hyperswarm and TypeScript",
+  "version": "0.2.0",
+  "description": "Secure Terminal P2P chat using Hyperswarm and TypeScript with E2E encryption",
   "main": "dist/index.js",
   "scripts": {
     "start": "ts-node src/index.ts",

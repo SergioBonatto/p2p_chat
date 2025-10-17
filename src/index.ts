@@ -407,6 +407,25 @@ async function main() {
     const text = line.trim()
     if (!text) return
     if (text === '/quit') {
+      // Envia mensagem de saída para os peers
+      const leftPayload: EncryptedPayload = {
+        peerId,
+        text: `${peerId} saiu da sala`,
+        ts: Date.now(),
+        nonce: makeNonce(),
+        seq: mySequence++
+      }
+      const leftPlaintext = JSON.stringify(leftPayload)
+      const leftB64 = encryptWithSignature(leftPlaintext, key, keypair.privateKey)
+      const leftMsg: Message = { type: 'enc', payload: leftB64 }
+      const leftBuf = msgToBuffer(leftMsg)
+      for (const s of Array.from(sockets)) {
+        if (!s.destroyed) {
+          try {
+            s.write(leftBuf)
+          } catch (e) { /* ignore */ }
+        }
+      }
       console.log('Saindo...')
       rl.close()
       swarm.destroy()
@@ -424,8 +443,8 @@ async function main() {
     const plaintext = JSON.stringify(payloadObj)
     // encrypt and sign
     const b64 = encryptWithSignature(plaintext, key, keypair.privateKey)
-    // Note: peerId removed from outer message to reduce metadata leakage
-    // It's now only in the encrypted payload
+    // Note: peerId removido do outer message para reduzir metadata leakage
+    // Está apenas no payload criptografado
     const message: Message = { type: 'enc', payload: b64 }
     const buf = msgToBuffer(message)
     for (const s of Array.from(sockets)) {
