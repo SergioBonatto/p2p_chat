@@ -73,7 +73,7 @@ These persist across sessions, maintaining your identity.
 
 ---
 
-## 📖 How It Works
+## How It Works
 
 ### Architecture
 
@@ -123,7 +123,7 @@ These persist across sessions, maintaining your identity.
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### Constants (in `src/index.ts`)
 
@@ -189,7 +189,7 @@ npm start
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 p2p_chat/
@@ -238,7 +238,7 @@ npm start
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### "could not decrypt/verify message"
 **Cause**: Peer using different room code or different version.
