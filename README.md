@@ -1,4 +1,4 @@
-# 🔒 P2P Chat - Secure Terminal Chat
+# P2P Chat - Secure Terminal Chat
 
 Terminal-based peer-to-peer chat with military-grade end-to-end encryption, no servers required.
 
@@ -8,9 +8,9 @@ Terminal-based peer-to-peer chat with military-grade end-to-end encryption, no s
 
 ---
 
-## 🌟 Features
+## Features
 
-### 🔐 Security First
+### Security First
 - **E2E Encryption**: AES-256-GCM authenticated encryption
 - **Digital Signatures**: Ed25519 signatures verify message authenticity
 - **Replay Protection**: Nonces and timestamp validation prevent replay attacks
@@ -18,13 +18,13 @@ Terminal-based peer-to-peer chat with military-grade end-to-end encryption, no s
 - **PBKDF2 Key Derivation**: 100,000 iterations protect against brute force
 - **Minimal Metadata**: PeerID and timestamps encrypted, reducing traffic analysis
 
-### 🌐 True P2P
+### True P2P
 - **No Central Servers**: Uses Hyperswarm DHT for peer discovery
 - **Global Reach**: Works across the Internet, not just LAN
 - **NAT Traversal**: Built-in hole punching for firewall/NAT traversal
 - **Decentralized**: No single point of failure
 
-### 🎯 Privacy
+### Privacy
 - **Persistent Identity**: Cryptographic identity persists across sessions
 - **Room-based**: Join encrypted rooms with shared codes
 - **No Registration**: No accounts, emails, or personal data
@@ -32,13 +32,13 @@ Terminal-based peer-to-peer chat with military-grade end-to-end encryption, no s
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/p2p_chat.git
+git clone https://github.com/sergiobonatto/p2p_chat.git
 cd p2p_chat
 
 # Install dependencies
@@ -155,16 +155,6 @@ Adjust these in the source code as needed for your use case.
 | **Memory Safety** | ✅ | Automatic cleanup on disconnect |
 | **Metadata Privacy** | ✅ | PeerID/timestamp in encrypted payload |
 
-### 🔜 Planned (v0.3+)
-
-| Feature | Status | Priority |
-|---------|--------|----------|
-| **Perfect Forward Secrecy** | 🔜 | High |
-| **Message History** | 🔜 | Medium |
-| **Peer Allowlist** | 🔜 | Medium |
-| **Rate Limiting** | 🔜 | Medium |
-| **GUI (Electron)** | 🔜 | Low |
-
 ---
 
 ## 🧪 Testing
@@ -215,7 +205,7 @@ p2p_chat/
 
 ---
 
-## 🔑 Key Management
+## Key Management
 
 ### Storage Location
 ```
@@ -226,7 +216,7 @@ p2p_chat/
 
 ### Backup Your Keys
 
-**⚠️ IMPORTANT**: Backup these files to preserve your identity:
+**IMPORTANT**: Backup these files to preserve your identity:
 
 ```bash
 # Backup
@@ -269,71 +259,3 @@ npm start
 **Cause**: PBKDF2 takes ~50ms (by design for security).
 
 **Action**: This is normal. Wait a moment.
-
----
-
-## 🤝 Contributing
-
-Contributions welcome! Areas of interest:
-
-- [ ] Perfect Forward Secrecy (Double Ratchet)
-- [ ] Message history with Hypercore
-- [ ] GUI interface
-- [ ] Mobile support
-- [ ] File transfer
-- [ ] Voice/video calls
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
----
-
-## 📜 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Hyperswarm**: P2P networking stack
-- **libsodium/crypto**: Cryptographic primitives
-- **Signal Protocol**: Inspiration for security design
-- **OWASP**: Security best practices
-
----
-
-## 📚 References
-
-- [Hyperswarm Docs](https://github.com/holepunchto/hyperswarm)
-- [Signal Protocol](https://signal.org/docs/)
-- [OWASP Cryptographic Storage](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)
-- [NIST SP 800-132](https://csrc.nist.gov/publications/detail/sp/800-132/final) - Key Derivation
-
----
-
-## ⚠️ Disclaimer
-
-This software is provided for educational and research purposes. While we implement industry-standard cryptography:
-
-- ✅ Code is open source for audit
-- ✅ Uses well-established algorithms (AES-256, Ed25519, PBKDF2)
-- ⚠️ Has not been formally audited by security professionals
-- ⚠️ Use at your own risk for sensitive communications
-
-For production use with sensitive data, we recommend professional security audit.
-
----
-
-## 📞 Contact
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/p2p_chat/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/p2p_chat/discussions)
-- **Security**: Report vulnerabilities privately to [security@yourproject.com]
-
----
-
-**Version**: 0.2.0
-**Last Updated**: 2025-10-17
-**Status**: Active Development
-
-Made with ❤️ and 🔒 by developers who care about privacy.
