@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "dist",
     "rootDir": "src",
@@ -11,5 +11,11 @@
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types", "./src"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "ts-node": {
+    "esm": false,
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  }
 }

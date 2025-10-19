@@ -1,10 +1,15 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 // src/index.ts
-import Hyperswarm from 'hyperswarm';
-import crypto from 'crypto';
-import readline from 'readline';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+const hyperswarm_1 = __importDefault(require("hyperswarm"));
+const crypto_1 = __importDefault(require("crypto"));
+const readline_1 = __importDefault(require("readline"));
+const fs_1 = __importDefault(require("fs"));
+const os_1 = __importDefault(require("os"));
+const path_1 = __importDefault(require("path"));
 /**
  * Versão com persistência de chave privada e peerId:
  * - diretório: ~/.p2p_chat/
@@ -18,9 +23,9 @@ import path from 'path';
  * - Hyperswarm DHT discovery
  */
 // ----- Config de persistência -----
-const STORAGE_DIR = path.join(os.homedir(), '.p2p_chat');
-const KEY_PATH = path.join(STORAGE_DIR, 'key.pem');
-const PEERID_PATH = path.join(STORAGE_DIR, 'peerid.txt');
+const STORAGE_DIR = path_1.default.join(os_1.default.homedir(), '.p2p_chat');
+const KEY_PATH = path_1.default.join(STORAGE_DIR, 'key.pem');
+const PEERID_PATH = path_1.default.join(STORAGE_DIR, 'peerid.txt');
 // ----- Constants -----
 const MAX_MESSAGE_AGE_MS = 5 * 60 * 1000; // 5 minutes
 const MAX_MESSAGE_FUTURE_MS = 60 * 1000; // 1 minute (clock skew tolerance)
@@ -40,19 +45,19 @@ function parseLines(buffered, carry) {
     return { lines: parts.filter(Boolean), carry: carryOut };
 }
 function makePeerId() {
-    return crypto.randomBytes(6).toString('hex');
+    return crypto_1.default.randomBytes(6).toString('hex');
 }
 function makeNonce() {
-    return crypto.randomBytes(16).toString('base64');
+    return crypto_1.default.randomBytes(16).toString('base64');
 }
 function deriveKeyFromCode(code) {
     // Use PBKDF2 for key derivation with fixed salt derived from code
     // Note: In a perfect world, we'd use a random salt stored with the key,
     // but since this is a shared room code system, we derive a deterministic
     // salt from the code itself so all peers derive the same key
-    const salt = crypto.createHash('sha256').update('p2p_chat_salt_v1:' + code).digest();
+    const salt = crypto_1.default.createHash('sha256').update('p2p_chat_salt_v1:' + code).digest();
     // Synchronous PBKDF2 with SHA-256
-    return crypto.pbkdf2Sync(code, salt, PBKDF2_ITERATIONS, PBKDF2_KEYLEN, 'sha256');
+    return crypto_1.default.pbkdf2Sync(code, salt, PBKDF2_ITERATIONS, PBKDF2_KEYLEN, 'sha256');
 }
 // Validate message timestamp to prevent replay of old messages
 function isTimestampValid(ts) {
@@ -71,12 +76,12 @@ function isTimestampValid(ts) {
 }
 // encrypt plaintext (utf8) -> base64(iv || ciphertext || tag || signature)
 function encryptWithSignature(plaintext, key, signKey) {
-    const iv = crypto.randomBytes(12);
-    const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+    const iv = crypto_1.default.randomBytes(12);
+    const cipher = crypto_1.default.createCipheriv('aes-256-gcm', key, iv);
     const ciphertext = Buffer.concat([cipher.update(Buffer.from(plaintext, 'utf8')), cipher.final()]);
     const tag = cipher.getAuthTag();
     // signature over plaintext (utf8)
-    const signature = crypto.sign(null, Buffer.from(plaintext, 'utf8'), signKey); // Ed25519
+    const signature = crypto_1.default.sign(null, Buffer.from(plaintext, 'utf8'), signKey); // Ed25519
     const out = Buffer.concat([iv, ciphertext, tag, signature]);
     return out.toString('base64');
 }
@@ -89,7 +94,7 @@ function decryptAndExtractSignature(base64payload, key) {
     const signature = buf.slice(buf.length - 64); // last 64 bytes
     const tag = buf.slice(buf.length - 64 - 16, buf.length - 64);
     const ciphertext = buf.slice(12, buf.length - 64 - 16);
-    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+    const decipher = crypto_1.default.createDecipheriv('aes-256-gcm', key, iv);
     decipher.setAuthTag(tag);
     const pt = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
     return { plaintext: pt.toString('utf8'), signature };
@@ -97,7 +102,7 @@ function decryptAndExtractSignature(base64payload, key) {
 // ----- Persistence utilities -----
 function ensureStorageDir() {
     try {
-        fs.mkdirSync(STORAGE_DIR, { recursive: true, mode: 0o700 });
+        fs_1.default.mkdirSync(STORAGE_DIR, { recursive: true, mode: 0o700 });
     }
     catch (e) {
         // ignore if already exists
@@ -105,42 +110,42 @@ function ensureStorageDir() {
 }
 function saveFileSecure(p, content) {
     // write file and set permission 600
-    fs.writeFileSync(p, content, { mode: 0o600 });
+    fs_1.default.writeFileSync(p, content, { mode: 0o600 });
 }
 function loadPrivateKeyOrCreate() {
     ensureStorageDir();
-    if (fs.existsSync(KEY_PATH)) {
-        const pem = fs.readFileSync(KEY_PATH, 'utf8');
-        const priv = crypto.createPrivateKey({ key: pem, format: 'pem', type: 'pkcs8' });
-        const pub = crypto.createPublicKey(priv);
+    if (fs_1.default.existsSync(KEY_PATH)) {
+        const pem = fs_1.default.readFileSync(KEY_PATH, 'utf8');
+        const priv = crypto_1.default.createPrivateKey({ key: pem, format: 'pem', type: 'pkcs8' });
+        const pub = crypto_1.default.createPublicKey(priv);
         return { privateKey: priv, publicKey: pub, created: false };
     }
     else {
         // generate new keypair
-        const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+        const { publicKey, privateKey } = crypto_1.default.generateKeyPairSync('ed25519');
         // export private key PEM PKCS#8
         const privPem = privateKey.export({ type: 'pkcs8', format: 'pem' });
         saveFileSecure(KEY_PATH, privPem);
         // ensure mode correct (some platforms ignore mode in writeFileSync), set explicitly
         try {
-            fs.chmodSync(KEY_PATH, 0o600);
+            fs_1.default.chmodSync(KEY_PATH, 0o600);
         }
         catch { /* ignore */ }
-        const pub = crypto.createPublicKey(privateKey);
+        const pub = crypto_1.default.createPublicKey(privateKey);
         return { privateKey, publicKey: pub, created: true };
     }
 }
 function loadOrCreatePeerId() {
     ensureStorageDir();
-    if (fs.existsSync(PEERID_PATH)) {
-        const pid = fs.readFileSync(PEERID_PATH, 'utf8').trim();
+    if (fs_1.default.existsSync(PEERID_PATH)) {
+        const pid = fs_1.default.readFileSync(PEERID_PATH, 'utf8').trim();
         return { peerId: pid, created: false };
     }
     else {
         const pid = makePeerId();
         saveFileSecure(PEERID_PATH, pid);
         try {
-            fs.chmodSync(PEERID_PATH, 0o600);
+            fs_1.default.chmodSync(PEERID_PATH, 0o600);
         }
         catch { /* ignore */ }
         return { peerId: pid, created: true };
@@ -148,7 +153,7 @@ function loadOrCreatePeerId() {
 }
 // ----- Main -----
 async function main() {
-    const rl = readline.createInterface({
+    const rl = readline_1.default.createInterface({
         input: process.stdin,
         output: process.stdout
     });
@@ -178,8 +183,8 @@ async function main() {
     const pubDer = keypair.publicKey.export({ type: 'spki', format: 'der' });
     const pubDerB64 = pubDer.toString('base64');
     const key = deriveKeyFromCode(code); // symmetric AES-256 key
-    const topic = crypto.createHash('sha256').update(code).digest();
-    const swarm = new Hyperswarm();
+    const topic = crypto_1.default.createHash('sha256').update(code).digest();
+    const swarm = new hyperswarm_1.default();
     swarm.on('error', (err) => console.error('swarm error', err));
     // store mapping peerId -> PublicKey object (crypto.KeyObject) for signature verification
     const peerPubKeys = new Map();
@@ -236,7 +241,7 @@ async function main() {
                         if (m.pubKey) {
                             try {
                                 const pubBuf = Buffer.from(m.pubKey, 'base64');
-                                const pubKeyObj = crypto.createPublicKey({ key: pubBuf, format: 'der', type: 'spki' });
+                                const pubKeyObj = crypto_1.default.createPublicKey({ key: pubBuf, format: 'der', type: 'spki' });
                                 peerPubKeys.set(remotePeerId, pubKeyObj);
                                 console.log(`[hello] ${remotePeerId} connected (${remoteAddr}) — pubKey stored`);
                             }
@@ -285,7 +290,7 @@ async function main() {
                                 continue;
                             }
                             // verify signature
-                            const ok = crypto.verify(null, Buffer.from(plaintext, 'utf8'), pub, signature);
+                            const ok = crypto_1.default.verify(null, Buffer.from(plaintext, 'utf8'), pub, signature);
                             if (!ok) {
                                 console.log(`[enc] signature INVALID for ${claimedPeer} — message discarded`);
                                 continue;
@@ -346,6 +351,26 @@ async function main() {
         if (!text)
             return;
         if (text === '/quit') {
+            // Envia mensagem de saída para os peers
+            const leftPayload = {
+                peerId,
+                text: `${peerId} saiu da sala`,
+                ts: Date.now(),
+                nonce: makeNonce(),
+                seq: mySequence++
+            };
+            const leftPlaintext = JSON.stringify(leftPayload);
+            const leftB64 = encryptWithSignature(leftPlaintext, key, keypair.privateKey);
+            const leftMsg = { type: 'enc', payload: leftB64 };
+            const leftBuf = msgToBuffer(leftMsg);
+            for (const s of Array.from(sockets)) {
+                if (!s.destroyed) {
+                    try {
+                        s.write(leftBuf);
+                    }
+                    catch (e) { /* ignore */ }
+                }
+            }
             console.log('Saindo...');
             rl.close();
             swarm.destroy();
@@ -363,8 +388,8 @@ async function main() {
         const plaintext = JSON.stringify(payloadObj);
         // encrypt and sign
         const b64 = encryptWithSignature(plaintext, key, keypair.privateKey);
-        // Note: peerId removed from outer message to reduce metadata leakage
-        // It's now only in the encrypted payload
+        // Note: peerId removido do outer message para reduzir metadata leakage
+        // Está apenas no payload criptografado
         const message = { type: 'enc', payload: b64 };
         const buf = msgToBuffer(message);
         for (const s of Array.from(sockets)) {
