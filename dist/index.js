@@ -3,6 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// Ativa debug detalhado do Hyperswarm se variável de ambiente DEBUG não estiver setada
+if (!process.env.DEBUG) {
+    process.env.DEBUG = 'hyperswarm*';
+    console.log('[debug] DEBUG=hyperswarm* ativado para logs detalhados do Hyperswarm');
+}
 // src/index.ts
 const hyperswarm_1 = __importDefault(require("hyperswarm"));
 const crypto_1 = __importDefault(require("crypto"));
@@ -186,6 +191,23 @@ async function main() {
     const topic = crypto_1.default.createHash('sha256').update(code).digest();
     const swarm = new hyperswarm_1.default();
     swarm.on('error', (err) => console.error('swarm error', err));
+    swarm.on('connection', (socket, details) => {
+        console.log('[swarm] Evento de conexão recebido:', {
+            peer: details.peer,
+            type: details.type,
+            client: details.client,
+            server: details.server
+        });
+    });
+    swarm.on('discovery', (peer) => {
+        console.log('[swarm] Peer descoberto:', peer);
+    });
+    swarm.on('update', () => {
+        console.log('[swarm] Update de peers');
+    });
+    swarm.on('close', () => {
+        console.log('[swarm] Swarm fechado');
+    });
     // store mapping peerId -> PublicKey object (crypto.KeyObject) for signature verification
     const peerPubKeys = new Map();
     // store nonces per peer to prevent replay attacks
@@ -400,7 +422,7 @@ async function main() {
                 catch (e) { /* ignore */ }
             }
         }
-        const now = new Date(message.ts).toLocaleTimeString();
+        const now = new Date(payloadObj.ts).toLocaleTimeString();
         console.log(`[${now}] você: ${text}`);
     });
 }

@@ -1,3 +1,9 @@
+  // Ativa debug detalhado do Hyperswarm se variável de ambiente DEBUG não estiver setada
+  if (!process.env.DEBUG) {
+    process.env.DEBUG = 'hyperswarm*';
+    console.log('[debug] DEBUG=hyperswarm* ativado para logs detalhados do Hyperswarm');
+  }
+
 // src/index.ts
 import Hyperswarm from 'hyperswarm'
 import crypto from 'crypto'
@@ -454,8 +460,8 @@ async function main() {
         } catch (e) { /* ignore */ }
       }
     }
-    const now = new Date(message.ts!).toLocaleTimeString()
-    console.log(`[${now}] você: ${text}`)
+  const now = new Date(payloadObj.ts).toLocaleTimeString()
+  console.log(`[${now}] você: ${text}`)
   })
 }
 
